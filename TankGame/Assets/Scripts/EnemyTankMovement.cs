@@ -65,6 +65,24 @@ public class EnemyTankMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (m_Follow == false)
+            return;
+
+        //get distance from enemy to player
+        float distance = (m_Player.transform.position - transform.position).magnitude;
+        //if distance is less than stop distance, than stop moving
+        if (distance > m_CloseDistance)
+        {
+            m_NavAgent.SetDestination(m_Player.transform.position);
+            m_NavAgent.isStopped = false;
+        }
+        else
+        {
+            m_NavAgent.isStopped = true;
+        }
+        if (m_turret != null)
+        {
+            m_turret.LookAt(m_Player.transform);
+        }
     }
 }

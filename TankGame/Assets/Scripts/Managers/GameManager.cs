@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
         {
             if (m_Tanks[i].activeSelf == false)
             {
-                if (m_Tanks[1].tag == "Player")
+                if (m_Tanks[i].tag == "Player")
                 {
                     return true;
                 }

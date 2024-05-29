@@ -2,13 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public HighScores m_HighScores;
     // reference to the overlay text to display winning text, etc
     public TextMeshProUGUI m_MessageText;
     public TextMeshProUGUI m_TimerText;
 
+    public GameObject m_HighScorePanel;
+    public TextMeshProUGUI m_HighScoresText;
+
+    public Button m_NewGameButton;
+    public Button m_HighScoreButton;
 
     public GameObject[] m_Tanks;
 
@@ -41,6 +48,9 @@ public class GameManager : MonoBehaviour
         m_TimerText.gameObject.SetActive(false);
         m_MessageText.text = "Get Ready";
 
+        m_HighScorePanel.gameObject.SetActive(false);
+        m_NewGameButton.gameObject.SetActive(false);
+        m_HighScoreButton.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -70,7 +80,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Return) == true)
         {
             OnNewGame();
-           
+
             /* m_GameState = GameState.Playing;
 
             for (int i = 0; i < m_Tanks.Length; i++)
@@ -101,11 +111,16 @@ public class GameManager : MonoBehaviour
             //Debug.Log("You Win");
             m_MessageText.text = "WINNER";
             isGameOver = true;
+            m_HighScores.AddScore(Mathf.RoundToInt(m_gameTime));
+            m_HighScores.SaveScoresToFile();
         }
 
         if (isGameOver == true)
         {
             m_GameState = GameState.GameOver;
+
+            m_NewGameButton.gameObject.SetActive(true);
+            m_HighScoreButton.gameObject.SetActive(true);
         }
     }
 
@@ -136,6 +151,10 @@ public class GameManager : MonoBehaviour
             m_Tanks[i].SetActive(true);
         }
         m_GameState = GameState.Playing;
+
+        m_NewGameButton.gameObject.SetActive(false);
+        m_HighScoreButton.gameObject.SetActive(false);
+        m_HighScorePanel.SetActive(false);
     }
 
     private bool OneTankLeft()
@@ -166,5 +185,21 @@ public class GameManager : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void OnHighScores()
+    {
+        m_MessageText.text = " ";
+
+        m_HighScoreButton.gameObject.SetActive(false);
+        m_HighScorePanel.SetActive(true);
+
+        string text = " ";
+        for (int i = 0; i < m_HighScores.scores.Length; i++)
+        {
+            int seconds = m_HighScores.scores[i];
+            text += string.Format("{0:D2}:{1:D2}\n", (seconds / 60), (seconds % 60));
+        }
+        m_HighScoresText.text = text;
     }
 }
